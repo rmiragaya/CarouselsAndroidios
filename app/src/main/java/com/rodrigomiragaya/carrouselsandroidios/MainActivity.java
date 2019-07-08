@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,13 +52,18 @@ public class MainActivity extends AppCompatActivity {
         mQueu = Volley.newRequestQueue(this);
 
         super.onStart();
-        StartAsync task = new StartAsync();
+        StartAsync task = new StartAsync(this);
         task.execute();
 
     }
 
 
-    private class StartAsync extends AsyncTask<Void, Void, ArrayList<Carousel>>{
+    private static class StartAsync extends AsyncTask<Void, Void, ArrayList<Carousel>>{
+        private WeakReference<MainActivity> activityWeakReference;
+
+        StartAsync(MainActivity activity){
+            activityWeakReference = new WeakReference<>(activity);
+        }
 
         @Override
         protected void onPreExecute() {
@@ -66,7 +72,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Carousel> doInBackground(Void... voids) {
-            jsonParse();
+
+            //Creando una StrongReference
+            MainActivity strongReference = activityWeakReference.get();
+            if (strongReference == null || strongReference.isFinishing()){
+                return null;
+            }
+
+            strongReference.jsonParse();
             return null;
         }
 
@@ -129,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Error en la conexión " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error en la conexión ", Toast.LENGTH_SHORT).show();
             }
         });
         mQueu.add(request);

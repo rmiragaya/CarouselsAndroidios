@@ -39,9 +39,9 @@ public class CarouAdapter extends RecyclerView.Adapter<CarouAdapter.carouViewHol
 
         //selecciona el Titulo del Carou
         if (carouselactual.getTipo().equalsIgnoreCase("thumb")){
-            carouViewHolder.titulocarru.setText("FOX PLAY +");
+            carouViewHolder.titulocarru.setText(R.string.thumb);
         }else {
-            carouViewHolder.titulocarru.setText("FOX Contenido Básico");
+            carouViewHolder.titulocarru.setText(R.string.poster);
         }
 
         //Crea Recycler de Peliculas
