@@ -61,4 +61,5 @@ public class VideoActivitie extends AppCompatActivity {
 
         Toast.makeText(this, "Cargando " + nombrepelicula, Toast.LENGTH_LONG).show();
     }
+
 }

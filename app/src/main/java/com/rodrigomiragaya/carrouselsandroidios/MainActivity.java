@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -24,6 +26,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    //Para Testear:
+    //Link Json del Test https://api.myjson.com/bins/ej0ev
+    //Link Json con 3 carrou https://api.myjson.com/bins/r7jlj
+    //Link Json con 1 carrou https://api.myjson.com/bins/8r3uf
+
     private RequestQueue mQueu;
     private String url = "https://api.myjson.com/bins/ej0ev";
     private ArrayList<Carousel> carouselArrayList = new ArrayList<>();
@@ -31,21 +38,15 @@ public class MainActivity extends AppCompatActivity {
     private CarouAdapter carouAdapter;
 
 
-
-    //Json de la prueba https://api.myjson.com/bins/ej0ev
-    //Json con mas carrou https://api.myjson.com/bins/r7jlj
-    //Json con un carrou https://api.myjson.com/bins/8r3uf
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         recyclerViewVertical = findViewById(R.id.recyclerView1);
         recyclerViewVertical.setHasFixedSize(true);
         recyclerViewVertical.setLayoutManager(new LinearLayoutManager(this));
-
 
         mQueu = Volley.newRequestQueue(this);
 
@@ -59,19 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private class StartAsync extends AsyncTask<Void, Void, ArrayList<Carousel>>{
 
         @Override
-        protected ArrayList<Carousel> doInBackground(Void... voids) {
-            jsonParse();
-            return null;
-        }
-
-        @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Carousel> arrayList) {
-            super.onPostExecute(arrayList);
+        protected ArrayList<Carousel> doInBackground(Void... voids) {
+            jsonParse();
+            return null;
         }
 
         @Override
@@ -79,17 +75,23 @@ public class MainActivity extends AppCompatActivity {
             super.onProgressUpdate(values);
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<Carousel> arrayList) {
+            super.onPostExecute(arrayList);
+        }
+
 
     }
 
 
-    private ArrayList<Carousel> jsonParse(){
+    private void jsonParse(){
         Log.d(TAG, "jsonParse: Llamado");
-
 
         final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+
+                // Parse Carous
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONArray itemsArraylist = jsonObject.getJSONArray("items");
 
 
-                        // aca va un for para agarrar todas las pelis dentro de ITEM
+                        // Parse Pelis dento de cada Carou
                         for (int x = 0; x < itemsArraylist.length(); x++) {
                             JSONObject jsonObject2 = itemsArraylist.getJSONObject(x);
                             String tituloPeli = jsonObject2.getString("tittle");
@@ -108,13 +110,12 @@ public class MainActivity extends AppCompatActivity {
                             Peliculas peli = new Peliculas(tituloPeli, urlPeli, videoPeli);
                             pelisArraylist.add(peli);
                         }
-                        // aca va un for para agarrar todas las pelis dentro de ITEM
 
-
-                        Carousel carousel =new Carousel(tituloCarru, tipocarrou, pelisArraylist );
-                        Log.d(TAG, "onResponse: " + carousel.toString());
+                        //Crea un Carou
+                        Carousel carousel = new Carousel(tituloCarru, tipocarrou, pelisArraylist );
                         carouselArrayList.add(carousel);
 
+                        //llama CarouAdapter
                         carouAdapter = new CarouAdapter(MainActivity.this,carouselArrayList);
                         recyclerViewVertical.setAdapter(carouAdapter);
 
@@ -128,11 +129,10 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Unable to fetch data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error en la conexión " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         mQueu.add(request);
-        return carouselArrayList;
 
     }
 }

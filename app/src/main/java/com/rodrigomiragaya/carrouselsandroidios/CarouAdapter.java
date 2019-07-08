@@ -37,14 +37,19 @@ public class CarouAdapter extends RecyclerView.Adapter<CarouAdapter.carouViewHol
 
         peliculasArrayList = carouselactual.getArrayPeliculas();
 
+        //selecciona el Titulo del Carou
         if (carouselactual.getTipo().equalsIgnoreCase("thumb")){
             carouViewHolder.titulocarru.setText("FOX PLAY +");
         }else {
             carouViewHolder.titulocarru.setText("FOX Contenido Básico");
         }
+
+        //Crea Recycler de Peliculas
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         carouViewHolder.recyclerViewPelis.setLayoutManager(layoutManager);
         carouViewHolder.recyclerViewPelis.setHasFixedSize(true);
+
+        //Llama PeliAdapter
         PeliAdapter peliAdapter = new PeliAdapter(mContext, peliculasArrayList, carouselactual.getTipo());
         carouViewHolder.recyclerViewPelis.setAdapter(peliAdapter);
         peliAdapter.setOnItemClickListener(this);
@@ -60,6 +65,8 @@ public class CarouAdapter extends RecyclerView.Adapter<CarouAdapter.carouViewHol
 
     @Override
     public void onItenClick(int posicion) {
+
+        //Click Listener de cada pelicula
         Intent detallesdelIntent = new Intent(mContext, VideoActivitie.class);
         Peliculas peliClickeada = peliculasArrayList.get(posicion);
         detallesdelIntent.putExtra("VIDEOURL",peliClickeada.getVideo() );
@@ -72,11 +79,11 @@ public class CarouAdapter extends RecyclerView.Adapter<CarouAdapter.carouViewHol
 
     }
 
-    public class carouViewHolder extends RecyclerView.ViewHolder{
-        public TextView titulocarru;
-        public RecyclerView recyclerViewPelis;
+    class carouViewHolder extends RecyclerView.ViewHolder{
+        private TextView titulocarru;
+        private RecyclerView recyclerViewPelis;
 
-        public carouViewHolder(@NonNull View itemView) {
+        private carouViewHolder(@NonNull View itemView) {
             super(itemView);
             titulocarru = itemView.findViewById(R.id.titulocarru);
             recyclerViewPelis = itemView.findViewById(R.id.recyclerViewHori);
