@@ -3,7 +3,6 @@ package com.rodrigomiragaya.carrouselsandroidios;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,15 @@ public class PeliAdapter extends RecyclerView.Adapter<PeliAdapter.CViewHolder> {
     private Context mContext;
     private ArrayList<Peliculas> peliculasArrayList;
     private String tipodeCarou;
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener{
+        void onItenClick(int posicion);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
 
 
     public PeliAdapter(Context mContext, ArrayList<Peliculas> peliculasArrayList, String tipodeCarou) {
@@ -47,7 +55,6 @@ public class PeliAdapter extends RecyclerView.Adapter<PeliAdapter.CViewHolder> {
 
         String imageUrl = peliculActual.getUrl();
         String tituloPeli = peliculActual.getTitulo();
-        String ulrVideo = peliculActual.getUrl();
 
         cViewHolder.tituloPeli.setText(tituloPeli);
         Picasso.get().load(imageUrl).fit().centerCrop().into(cViewHolder.imagenPeli);
@@ -66,6 +73,18 @@ public class PeliAdapter extends RecyclerView.Adapter<PeliAdapter.CViewHolder> {
             super(itemView);
             imagenPeli = itemView.findViewById(R.id.imagenPelicula);
             tituloPeli = itemView.findViewById(R.id.tituloPelicula);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null){
+                        int posicion = getAdapterPosition();
+                        if (posicion != RecyclerView.NO_POSITION){
+                            mListener.onItenClick(posicion);
+                        }
+                    }
+                }
+            });
         }
     }
 }

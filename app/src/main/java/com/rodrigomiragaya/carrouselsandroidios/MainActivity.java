@@ -1,6 +1,5 @@
 package com.rodrigomiragaya.carrouselsandroidios;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,12 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue mQueu;
     private String url = "https://api.myjson.com/bins/ej0ev";
     private ArrayList<Carousel> carouselArrayList = new ArrayList<>();
-    private Context context = this;
-    private RecyclerView mRecyclerView, recyclerViewVertical;
-    private PeliAdapter peliAdapter;
+    private RecyclerView recyclerViewVertical;
     private CarouAdapter carouAdapter;
-
-
 
 
 
@@ -51,19 +46,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewVertical.setHasFixedSize(true);
         recyclerViewVertical.setLayoutManager(new LinearLayoutManager(this));
 
-        mRecyclerView = findViewById(R.id.recyclerViewHori);
 
         mQueu = Volley.newRequestQueue(this);
 
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        super.onStart();
         StartAsync task = new StartAsync();
         task.execute();
+
     }
+
 
     private class StartAsync extends AsyncTask<Void, Void, ArrayList<Carousel>>{
 
@@ -90,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
     private ArrayList<Carousel> jsonParse(){
