@@ -25,13 +25,16 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    //Para Testear:
-    //Link Json del Test https://api.myjson.com/bins/ej0ev
-    //Link Json con 3 carrou https://api.myjson.com/bins/r7jlj
-    //Link Json con 1 carrou https://api.myjson.com/bins/8r3uf
+    //For Test:
+    //Link Json del Test
+    private static final String URL1 = "https://api.myjson.com/bins/ej0ev";
+    //Link Json con 1
+    private static final String URL2 = "https://api.myjson.com/bins/8r3uf";
+    //Link Json con 3
+    private static final String URL3 = "https://api.myjson.com/bins/r7jlj";
+
 
     private RequestQueue mQueu;
-    private String url = "https://api.myjson.com/bins/ej0ev";
     private ArrayList<Carousel> carouselArrayList = new ArrayList<>();
     private RecyclerView recyclerViewVertical;
     private CarouAdapter carouAdapter;
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private void jsonParse(){
         Log.d(TAG, "jsonParse: Llamado");
 
-        final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL1, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
